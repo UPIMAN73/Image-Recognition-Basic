@@ -36,7 +36,7 @@ class NNImage:
                 red = i[j][0]
                 green = i[j][1]
                 blue = i[j][2]
-                row_matrix.append(blackScale(red, green, blue))
+                row_matrix.append(self.blackScale(self.blackScalePerc(red, green, blue)))
             
             # appending the calculated row matrix to the result matrix
             result.append(row_matrix)

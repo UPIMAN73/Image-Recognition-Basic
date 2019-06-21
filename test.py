@@ -1,12 +1,21 @@
-# possibly import cnn
+from Classes.nnimage import NNImage
+from Classes.cnnitem import CNNItem
 
-fname = "backslash_5x5.png"
+fname = "./Images/backslash_5x5.png"
 
+# Matrix and Array based calculations and declarations
 def zeroArray(arry):
     res = []
     for i in range(0, len(arry)):
         res.append(0)
     return res
+
+# Matrix Sum
+def matrixSum(matrix):
+  res = 0
+  for i in matrix:
+    res += i
+  return res
 
 
 # Final Layer for Neural Networks
@@ -35,10 +44,11 @@ def finalLayer(pmatrix, pools):
     return ansArray.index(max(ansArray))
 
 
-
-img1 = NNImage(fname)
+# Image Encoding Test
+img1 = NNImage("./Images/backslash_5x5.png")
 img1_matrix = img1.encodedMatrix
 print(img1_matrix)
+
 
 # TODO neural network setup
 

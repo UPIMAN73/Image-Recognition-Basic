@@ -2,12 +2,12 @@ class CNNItem:
     def __init__(self, name, imgMatrix, filter):
         self.name = name
         self.imgMatrix = imgMatrix
-        self.cmatrix = convolutionLayer(imgMatrix, filter)
+        self.cmatrix = self.convolutionLayer(imgMatrix, filter)
         self.pmatrix = None # This must be redefined for specific values
     
 
     # convolutional layers
-    def convolutionLayer(matrix, filter):
+    def convolutionLayer(self, matrix, filter):
         #construct convolution matrix
         cmatrix = []
 
@@ -31,21 +31,21 @@ class CNNItem:
 
 
     # Pool layer is the layer that sets up the convoluted matrix to finalized processes
-    def poolLayer(cmatrix, v1, v2):
+    def poolLayer(self, cmatrix, v1, v2):
         # two matrix values because comparing two values
         enc1 = []
         enc2 = []
 
         # First comparison values
         for i in range(0, len(cmatrix)):
-            if cmatrix[i] == v1:
+            if cmatrix[i] >= v1:
                 enc1.append(1)
             else:
                 enc1.append(-1)
         
         # Second comparison values
         for i in range(0, len(cmatrix)):
-            if cmatrix[i] == v2:
+            if cmatrix[i] <= v2:
                 enc2.append(1)
             else:
                 enc2.append(-1)
