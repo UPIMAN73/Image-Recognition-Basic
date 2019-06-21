@@ -1,7 +1,10 @@
+# Local Class Imports
 from Classes.nnimage import NNImage
 from Classes.cnnitem import CNNItem
 
-fname = "./Images/backslash_5x5.png"
+# System Imports
+from os import listdir
+from os.path import isfile, join
 
 # Matrix and Array based calculations and declarations
 def zeroArray(arry):
@@ -44,12 +47,37 @@ def finalLayer(pmatrix, pools):
     return ansArray.index(max(ansArray))
 
 
-# Image Encoding Test
-img1 = NNImage("./Images/backslash_5x5.png")
-img1_matrix = img1.encodedMatrix
-print(img1_matrix)
-
-
 # TODO neural network setup
+image_names = [f for f in listdir("./Images") if ( isfile(join("./Images", f)) and (".png" in join("./Images", f)) )]
+images_array = []
+image_matrix = []
 
+# NN Arrays for calculating and applying NN
+item_array = []
+conv_array = []
+pool_array = []
+print(image_names)
 
+# Filter Array
+filter = []
+
+for fname in image_names:
+  # First Encode and setup image for NN
+  img = NNImage(fname)
+  image_matrix.append(img.encodedMatrix)
+  images_array.append(img)
+
+  # Then Setup and calculate for NN
+  # Convolution Layer
+  convolution = CNNItem(fname.split("_")[0].capitalize(), img.encodedMatrix, filter)
+  conv_array.append(convolution.cmatrix)
+
+  # Pooling Layer
+  convolution.pmatrix = convolution.poolLayer(convolution.cmatrix, 3, -3)
+  pool_array.append(convolution.pmatrix)
+
+  # Item Layer
+  item_array.append(convolution)
+
+  # Final Layer
+  print(item_array[finalLayer(convolution.pmatrix, pool_array)].name)
