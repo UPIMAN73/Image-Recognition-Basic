@@ -1,0 +1,11 @@
+Convolutional Neural Networks:
+
+Base train images:
+Find one image to train the computer
+    Setup Image and turn into an array
+    Analyze the array and convert the RGB values into percentage values (Blackscale or white scale or gray scale)
+    Setup a unit matrix that will analyze the picture and break apart matrix as values for another matrix
+    Other matrix analyzes last layer as a way to represent and define the object in computer format
+
+
+
