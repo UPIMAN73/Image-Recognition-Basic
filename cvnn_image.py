@@ -1,33 +1,12 @@
 # possibly import cnn
 
 fname = "backslash_5x5.png"
-imfile = open(fname, "rb")
 
 def zeroArray(arry):
     res = []
     for i in range(0, len(arry)):
         res.append(0)
     return res
-
-# Encoding values for color black
-def blackScalePerc(r, g, b):
-    res = None
-    rgb_c = [r/255, g/255, b/255]
-    res = (rgb_c[0] + rgb_c[1] + rgb_c[2])/3
-    return res
-
-# Fully encoded values for black scaling
-def blackScale(score):
-    return (-2 * score) + 1
-
-def loadImage(img):
-    imgMatrix = []
-    imgString = img.read()
-    print(imgString)
-    imgMatrix = imgString.split("\n")
-    print("\n\n\n")
-    print(imgMatrix)
-    return imgMatrix
 
 
 # Final Layer for Neural Networks
@@ -57,7 +36,9 @@ def finalLayer(pmatrix, pools):
 
 
 
-img1_matrix = loadImage(imfile)
+img1 = NNImage(fname)
+img1_matrix = img1.encodedMatrix
+print(img1_matrix)
 
 # TODO neural network setup
 
