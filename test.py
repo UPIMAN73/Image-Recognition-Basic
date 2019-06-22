@@ -56,14 +56,22 @@ image_matrix = []
 item_array = []
 conv_array = []
 pool_array = []
-print(image_names)
+
 
 # Filter Array
-filter = []
+# Filter Array must be defined
+filter = [1, 1, 1, 1]
+#filter_array = []
+
+# TODO Must add in a filter collection and have them sorted based on their correction scores
+
+# Accuracy lists
+correct = []
+#correct_array = []
 
 for fname in image_names:
   # First Encode and setup image for NN
-  img = NNImage(fname)
+  img = NNImage(join("./Images", fname))
   image_matrix.append(img.encodedMatrix)
   images_array.append(img)
 
@@ -80,4 +88,40 @@ for fname in image_names:
   item_array.append(convolution)
 
   # Final Layer
-  print(item_array[finalLayer(convolution.pmatrix, pool_array)].name)
+  guess_name = item_array[finalLayer(convolution.pmatrix, pool_array)].name
+
+  # Correction appending and printouts
+  if (guess_name == convolution.name):
+    print("Correct Guess: " + guess_name)
+    correct.append(convolution)
+  else:
+    print("Incorrect Guess: " + guess_name + "    is actually  " + convolution.name)
+
+
+# Printout of accuracy of the entire NN simulation
+print("\n\n\n\n")
+print("# of Images Guessed Correctly: " + str(len(correct)))
+correct_percentage = len(correct) / (1.0 * len(image_names)) * 100
+
+#correct_array.append(correct_percentage)
+
+print("% Value of Images Correct: " + str(correct_percentage) + "%")
+
+
+
+
+# Writing filter values to an outfile so that we can reload them at some point
+
+#max_correct_indexes = [i for i, j in enumerate(a) if j == m]
+#print("Highest Filter Correction Value: " + max(correct_array))
+
+# outFile = open("filters.txt", "w")
+
+# for i in max_correct_indexes:
+#   filter = filter_array[i]
+#   print("Filter Value: " + str(filter))
+#   outFile.write(filter + "\n")
+
+
+# outFile.close()
+

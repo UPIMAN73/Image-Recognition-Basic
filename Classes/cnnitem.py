@@ -24,7 +24,7 @@ class CNNItem:
                         msolution = 0
                         for k in range(0, len(msamples)):
                             msolution += msamples[k] * filter[k]
-                        m.append(msolution)
+                        cmatrix.append(msolution)
         
         # return the convoluted matrix
         return cmatrix
