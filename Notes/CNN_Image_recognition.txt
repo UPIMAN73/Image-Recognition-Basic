@@ -8,4 +8,27 @@ Find one image to train the computer
     Other matrix analyzes last layer as a way to represent and define the object in computer format
 
 
+Convolution Layer:
+    This layer is important because it is the foundation of a CNN
+    It requires a filter layer or a subsection layer that is the same size as the matrix you are using to analyze the image.
+    Filter layers are feature based sections of an image that help identify what the image is.
+    Filter layers dictate the arithmetic needed for the CNN to be computed
 
+
+Pooling Layer:
+    This layer is also important because it is the layer that essentially encodes the CL (Convoluted Layer)
+    It helps direct the machine in a way that is simply indentifies features within the image
+    Used for the Final Layer
+    Uses comparison thresholds to decide whether or not the feature is present.
+
+
+Final Layer:
+    This layer uses a pool matrix to compare all of the other pools to the pool that you just wanted to classify
+    You essentially use some basic arithmetic to calculate the response of the image that is a close match to the image that you want to classify
+    From this approach, you can easily classify images.
+    However, that does not mean it is the most accurate way to classify them.
+
+
+Output Layer:
+    All of the information will be saved to a text file showing the results of the simulation and the calculations process
+    All of the correctly called characters are recorded along with the filters
