@@ -5,6 +5,7 @@ from Classes.cnnitem import CNNItem
 # System Imports
 from os import listdir
 from os.path import isfile, join
+from math import sqrt
 
 # Matrix and Array based calculations and declarations
 def zeroArray(arry):
@@ -48,9 +49,11 @@ def finalLayer(pmatrix, pools):
 
 
 # TODO neural network setup
-image_names = [f for f in listdir("./Images") if ( isfile(join("./Images", f)) and (".png" in join("./Images", f)) )]
+img_dir = "./Images"
+image_names = [f for f in listdir(img_dir) if ( isfile(join(img_dir, f)) and (".png" in join(img_dir, f)) )]
 images_array = []
 image_matrix = []
+
 
 # NN Arrays for calculating and applying NN
 item_array = []
@@ -63,6 +66,9 @@ pool_array = []
 filter = [1, 1, 1, 1]
 #filter_array = []
 
+# Analyzing matrix size
+amsize = int(sqrt(len(filter)))
+
 # TODO Must add in a filter collection and have them sorted based on their correction scores
 
 # Accuracy lists
@@ -71,13 +77,13 @@ correct = []
 
 for fname in image_names:
   # First Encode and setup image for NN
-  img = NNImage(join("./Images", fname))
+  img = NNImage(join(img_dir, fname))
   image_matrix.append(img.encodedMatrix)
   images_array.append(img)
 
   # Then Setup and calculate for NN
   # Convolution Layer
-  convolution = CNNItem(fname.split("_")[0].capitalize(), img.encodedMatrix, filter)
+  convolution = CNNItem(fname.split("_")[0].capitalize(), img.encodedMatrix, filter, ams=amsize)
   conv_array.append(convolution.cmatrix)
 
   # Pooling Layer
