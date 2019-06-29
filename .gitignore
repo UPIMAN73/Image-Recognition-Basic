@@ -104,3 +104,5 @@ venv.bak/
 .mypy_cache/
 training_stats.json
 filters.txt
+Images/Test/backslash_1.png
+Images/Test/7_5x5.png

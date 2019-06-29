@@ -12,13 +12,38 @@ from random import random, randint
 from datetime import datetime
 import json
 
+# Final Layer for Neural Networks
+def finalLayer(pmatrix, pools):
+    ansArray = []
+
+    # iterate through the pools
+    for i in pools:
+        ansA = []
+
+        # go through the pool matrix from pool layer
+        for j in range(0, len(pmatrix)):
+          ans = 0
+
+          # get sum from pool to later compare the values and then classify
+          for k in range(0, len(pmatrix[j])):
+               ans += pmatrix[j][k] * i[j][k]
+        
+          # Append answer values to anwer array
+          ansA.append(ans)
+        
+        # Take the matrix sum and append it to answer arrays of pools
+        ansArray.append(matrixSum(ansA))
+
+    # return the index of the network items
+    return ansArray.index(max(ansArray))
+
 def getTrainInfo(name, tarray):
   for i in tarray:
     if i.name == name:
       return i
   return None
 
-img_dir = "./Images/universe_object_pictures"
+img_dir = "./Images/letters"
 image_names = [f for f in listdir(img_dir) if ( isfile(join(img_dir, f)) and (".png" in join(img_dir, f)) )]
 images_array = []
 image_matrix = []
@@ -35,7 +60,7 @@ for i in image_names:
   train_stats.append(TrainInfo(i.split("_")[0].capitalize()))
 
 # Filter Setup
-filter = [1, 1, 1, 1, 1, 1, 1, 1, 1]
+filter = [1, 1, 1, 1] #[1, 1, 1, 1, 1, 1, 1, 1, 1]
 num_of_states = 2    # Highly important if you want to setup the correct process for your NN
 threshold = 3 # Important for pool layer
 filter_array = []
@@ -43,7 +68,6 @@ desired_filter_length = pow(len(filter), num_of_states) #factorial(len(filter)) 
 ranfilter = []
 
 # setting up preset arrays
-
 while len(filter_array) != desired_filter_length:
   ranfilter = []
   for i in range(0, len(filter)):
