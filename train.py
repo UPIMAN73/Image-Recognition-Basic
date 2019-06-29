@@ -2,6 +2,7 @@
 from Classes.nnimage import NNImage
 from Classes.cnnitem import CNNItem
 from Classes.traininfo import TrainInfo
+from Classes.gf import *
 
 # System Imports
 from os import listdir
@@ -11,50 +12,13 @@ from random import random, randint
 from datetime import datetime
 import json
 
+def getTrainInfo(name, tarray):
+  for i in tarray:
+    if i.name == name:
+      return i
+  return None
 
-# Matrix and Array based calculations and declarations
-def zeroArray(arry):
-    res = []
-    for i in range(0, len(arry)):
-        res.append(0)
-    return res
-
-# Matrix Sum
-def matrixSum(matrix):
-  res = 0
-  for i in matrix:
-    res += i
-  return res
-
-
-# Final Layer for Neural Networks
-def finalLayer(pmatrix, pools):
-    ansArray = []
-
-    # iterate through the pools
-    for i in pools:
-        ansA = []
-
-        # go through the pool matrix from pool layer
-        for j in range(0, len(pmatrix)):
-          ans = 0
-
-          # get sum from pool to later compare the values and then classify
-          for k in range(0, len(pmatrix[j])):
-               ans += pmatrix[j][k] * i[j][k]
-        
-          # Append answer values to anwer array
-          ansA.append(ans)
-        
-        # Take the matrix sum and append it to answer arrays of pools
-        ansArray.append(matrixSum(ansA))
-
-    # return the index of the network items
-    return ansArray.index(max(ansArray))
-
-
-# TODO neural network setup
-img_dir = "./Images"
+img_dir = "./Images/universe_object_pictures"
 image_names = [f for f in listdir(img_dir) if ( isfile(join(img_dir, f)) and (".png" in join(img_dir, f)) )]
 images_array = []
 image_matrix = []
@@ -71,8 +35,9 @@ for i in image_names:
   train_stats.append(TrainInfo(i.split("_")[0].capitalize()))
 
 # Filter Setup
-filter = [1, 1, 1, 1]
+filter = [1, 1, 1, 1, 1, 1, 1, 1, 1]
 num_of_states = 2    # Highly important if you want to setup the correct process for your NN
+threshold = 3 # Important for pool layer
 filter_array = []
 desired_filter_length = pow(len(filter), num_of_states) #factorial(len(filter)) * num_of_states
 ranfilter = []
@@ -116,8 +81,13 @@ for filter in filter_array:
     conv_array.append(convolution.cmatrix)
 
     # Pooling Layer
-    convolution.pmatrix = convolution.poolLayer(convolution.cmatrix, 3, -3)
+    convolution.pmatrix = convolution.poolLayer(convolution.cmatrix, threshold, -threshold)
     pool_array.append(convolution.pmatrix)
+    
+    # Adding pool to training info
+    tinfo = getTrainInfo(convolution.name, train_stats)
+    if tinfo != None:
+      tinfo.pool = convolution.pmatrix
 
     # Item Layer
     item_array.append(convolution)
@@ -182,7 +152,7 @@ for i in range(0, len(filter_array)):
 
 outFile.close()
 
-# write out training stats
+# write out training stats to a json file
 json_file = open("training_stats.json", "w")
 obj_setup = {"date" : str(datetime.now()), "objects" : []}
 
