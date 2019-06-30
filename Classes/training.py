@@ -35,9 +35,9 @@ class Train:
         self.img_matrix = []
 
         # Encode and setup image for NN
-        for fname in img_names:    
+        for fname in self.img_names:    
             img = NNImage(join(self.img_dir, fname))
-            img.encodedMatrix = img.blackEncoding() # best use black encoding
+            img.encodedMatrix = img.blackEncoding()() # best use black encoding
             self.img_matrix.append(img.encodedMatrix)
             self.img_arry.append(img)
 
@@ -154,6 +154,8 @@ class Train:
         # return the index of the network items
         return ansArray.index(max(ansArray))
 
+
+    """ Neural Network Training Function of the Program """
     # Run the Training Loop for the Neural Network to Learn
     def run(self):
         for filter in self.filter_array:
@@ -162,8 +164,9 @@ class Train:
             for fname in self.img_names:
                 img_found = False
                 for i in self.img_arry:
-                    if not img_found:
-                        if i.name == fname:
+                    if img_found == False:
+                        # Change this split character for different OS
+                        if i.name.split("\\")[1] == fname:
                             img = i
                             img_found = True
                         else:
@@ -183,11 +186,6 @@ class Train:
                 convolution.pmatrix = convolution.poolLayer(convolution.cmatrix, self.threshold, -self.threshold)
                 self.pool_array.append(convolution.pmatrix)
 
-                # Adding pool to training info
-                tinfo = self.getTrainInfo(convolution.name)
-                if tinfo != None:
-                    tinfo.pool = convolution.pmatrix
-
                 # Item Layer
                 self.item_array.append(convolution)
 
@@ -202,6 +200,12 @@ class Train:
                     for i in self.train_stats:
                         if i.name == guess_name:
                             i.filters.append(filter)
+                            
+                            # Adding pool to training info
+                            tinfo = self.getTrainInfo(convolution.name)
+                            if tinfo != None:
+                                tinfo.pool.append(convolution.pmatrix)
+                                tinfo.convolution.append(convolution.cmatrix)
                 else:
                     if self.debug:
                         print("Incorrect Guess: " + guess_name + "    is actually  " + convolution.name)
@@ -264,7 +268,7 @@ class Train:
 
         # update object setup for training stats to a dictionary to convert to JSON
         for i in self.train_stats:
-            obj_setup["objects"].append({"name" : i.name, "filters" : i.filters, "pool" : i.pool})
+            obj_setup["objects"].append({"name" : i.name, "filters" : i.filters, "pool" : i.pool, "convolutions" : i.convolution})
 
         # write out information to a JSON file and clsoe it
         json_file.write(str(str(json.dumps(obj_setup)).encode("ascii").decode("ascii")))

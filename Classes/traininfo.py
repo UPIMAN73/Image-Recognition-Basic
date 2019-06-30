@@ -6,3 +6,4 @@ class TrainInfo:
         self.name = name
         self.filters = []
         self.pool = []
+        self.convolution = []
