@@ -34,6 +34,13 @@ class Train:
         self.img_arry = []
         self.img_matrix = []
 
+        # Encode and setup image for NN
+        for fname in img_names:    
+            img = NNImage(join(self.img_dir, fname))
+            img.encodedMatrix = img.blackEncoding() # best use black encoding
+            self.img_matrix.append(img.encodedMatrix)
+            self.img_arry.append(img)
+
         # NN Arrays for calculating and applying NN
         self.item_array = []
         self.conv_array = []
@@ -153,12 +160,20 @@ class Train:
             # file name for loop 
             correct = []
             for fname in self.img_names:
-                # First Encode and setup image for NN
-                img = NNImage(join(self.img_dir, fname))
-                img.encodedMatrix = img.blackEncoding() # best use black encoding
-                self.img_matrix.append(img.encodedMatrix)
-                self.img_arry.append(img)
+                img_found = False
+                for i in self.img_arry:
+                    if not img_found:
+                        if i.name == fname:
+                            img = i
+                            img_found = True
+                        else:
+                            continue
+                    else:
+                        break
 
+                if img_found == False:
+                    break
+                
                 # Then Setup and calculate for NN
                 # Convolution Layer
                 convolution = CNNItem(fname.split("_")[0].capitalize(), img.encodedMatrix, filter, ams=self.amsize)
