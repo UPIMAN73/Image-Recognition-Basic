@@ -155,7 +155,7 @@ class Train:
             for fname in self.img_names:
                 # First Encode and setup image for NN
                 img = NNImage(join(self.img_dir, fname))
-                img.encodedMatrix = img.whiteEncoding()
+                img.encodedMatrix = img.blackEncoding() # best use black encoding
                 self.img_matrix.append(img.encodedMatrix)
                 self.img_arry.append(img)
 

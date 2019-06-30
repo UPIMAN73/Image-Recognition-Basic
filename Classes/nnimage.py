@@ -5,6 +5,10 @@ class NNImage:
     def __init__(self, name):
         self.name = name
         self.img = Image.open(name)
+
+        # Only if image has color
+        self.convertToBW()
+
         self.imgMatrix = numpy.array(self.img, dtype=int)
         self.encodedMatrix = []
     
@@ -21,7 +25,7 @@ class NNImage:
     
     # Fully encoded values for white scaling
     def whiteScale(self, score):
-        return (2 * score)  # linear equation for defining whitescale
+        return (2 * score) - 1  # linear equation for defining whitescale
 
     
     # Black encoding matrix of the image matrix
@@ -68,3 +72,21 @@ class NNImage:
             # appending the calculated row matrix to the result matrix
             result.append(row_matrix)
         return result
+
+
+    # Convert Color Images to Black and White Images
+    def convertToBW(self):
+        self.img = self.img.convert("L")
+        self.imgMatrix = numpy.array(self.img, dtype=int)
+        self.imgMatrix = self.binarize_array(self.imgMatrix)
+    
+
+    # Function converts all colors to be black or white
+    def binarize_array(self, numpy_array, threshold=200):
+    for i in range(len(numpy_array)):
+        for j in range(len(numpy_array[0])):
+            if numpy_array[i][j] > threshold:
+                numpy_array[i][j] = 255
+            else:
+                numpy_array[i][j] = 0
+    return numpy_array
