@@ -83,10 +83,10 @@ class NNImage:
 
     # Function converts all colors to be black or white
     def binarize_array(self, numpy_array, threshold=200):
-    for i in range(len(numpy_array)):
-        for j in range(len(numpy_array[0])):
-            if numpy_array[i][j] > threshold:
-                numpy_array[i][j] = 255
-            else:
-                numpy_array[i][j] = 0
-    return numpy_array
+        for i in range(len(numpy_array)):
+            for j in range(len(numpy_array[0])):
+                if numpy_array[i][j] > threshold:
+                    numpy_array[i][j] = 255
+                else:
+                    numpy_array[i][j] = 0
+        return numpy_array
