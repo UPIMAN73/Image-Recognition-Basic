@@ -10,6 +10,8 @@ for i in range(0, filter_size * filter_size):
     filter.append(1)
 
 # Train Class Test
-train = Train("./Images/Test", filter, states, threshold, negative_filter_encoding=True, debug=False)
+train = Train("./Images/letters", filter, states, threshold, negative_filter_encoding=True, debug=False)
 train.run()
+print(len(train.conv_array))
+print(len(train.pool_array))
 train.writeOut()

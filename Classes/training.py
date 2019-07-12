@@ -166,7 +166,7 @@ class Train:
                 for i in self.img_arry:
                     if img_found == False:
                         # Change this split character for different OS
-                        if i.name.split("\\")[1] == fname:
+                        if i.name.split("/")[1] == fname:
                             img = i
                             img_found = True
                         else:
