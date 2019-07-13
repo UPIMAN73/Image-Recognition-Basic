@@ -5,5 +5,3 @@ class TrainInfo:
     def __init__(self, name):
         self.name = name
         self.filters = []
-        self.pool = []
-        self.convolution = []

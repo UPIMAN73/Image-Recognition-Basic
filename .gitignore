@@ -102,7 +102,7 @@ venv.bak/
 
 # mypy
 .mypy_cache/
+
+# Training Stats
 training_stats.json
 filters.txt
-Images/Test/backslash_1.png
-Images/Test/7_5x5.png

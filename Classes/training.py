@@ -9,6 +9,7 @@ from os.path import isfile, join
 from math import sqrt, factorial
 from random import random, randint
 from datetime import datetime
+from PIL import Image
 import json
 
 ############################
@@ -33,13 +34,32 @@ class Train:
         self.img_names = [f for f in listdir(img_dir) if ( (isfile(join(img_dir, f)) and ((".png" in join(img_dir, f)) or (".jpg" in join(img_dir, f)) or (".jpg" in join(img_dir, f)) ) )) ]
         self.img_arry = []
         self.img_matrix = []
+        self.img_height = []
+        self.img_width = []
+
+        # Grab the smallest image size to have it resize all images to this size
+        for fname in self.img_names:
+            img = NNImage(join(self.img_dir, fname))
+            self.img_height.append(img.img.height)
+            self.img_width.append(img.img.width)
+            img = None
+        
+        self.img_width = min(self.img_width)
+        self.img_height = min(self.img_height)
 
         # Encode and setup image for NN
-        for fname in self.img_names:    
+        for fname in self.img_names:
             img = NNImage(join(self.img_dir, fname))
+            # resize the image
+            if (img.img.size != (self.img_width, self.img_height)):
+                img.img.thumbnail((self.img_width, self.img_height), Image.ANTIALIAS)
+                print(img.img.size)
+                img.update()
+            # Encode the image
             img.encodedMatrix = img.blackEncoding()() # best use black encoding
             self.img_matrix.append(img.encodedMatrix)
             self.img_arry.append(img)
+
 
         # NN Arrays for calculating and applying NN
         self.item_array = []
@@ -53,11 +73,10 @@ class Train:
         
 
         # number variables
-        self.num_of_states = states    # Highly important if you want to setup the correct process for your NN
+        self.num_of_states = states           # Highly important if you want to setup the correct process for your NN
         self.threshold = threshold            # Important for pool layer
 
         # Filter Setup
-        ranfilter = []
         #[1, 1, 1, 1, 1, 1, 1, 1, 1]
         self.filter_array = []
 
@@ -65,6 +84,7 @@ class Train:
         self.desired_filter_length = pow(len(filter), self.num_of_states) #factorial(len(filter)) * num_of_states
 
         # setting up preset arrays
+        ranfilter = []
         while len(self.filter_array) != self.desired_filter_length:
             ranfilter = []
             
@@ -142,6 +162,8 @@ class Train:
                 ans = 0
 
                 # get sum from pool to later compare the values and then classify
+                #print(len(pmatrix[j]))
+                #print(len(i[j]))
                 for k in range(0, len(pmatrix[j])):
                     ans += pmatrix[j][k] * i[j][k]
             
@@ -158,15 +180,20 @@ class Train:
     """ Neural Network Training Function of the Program """
     # Run the Training Loop for the Neural Network to Learn
     def run(self):
+        counter = 0
         for filter in self.filter_array:
+            print(str(float(counter/len(self.filter_array))) + "% Completed")
             # file name for loop 
             correct = []
+            self.conv_array = []
+            self.item_array = []
+            self.pool_array = []
             for fname in self.img_names:
                 img_found = False
                 for i in self.img_arry:
                     if img_found == False:
                         # Change this split character for different OS
-                        if i.name.split("/")[1] == fname:
+                        if i.name.split("/")[len(i.name.split("/")) - 1] == fname:
                             img = i
                             img_found = True
                         else:
@@ -197,18 +224,17 @@ class Train:
                     if self.debug:
                         print("Correct Guess: " + guess_name)
                     correct.append(convolution)
+
+                    # Adding filters to training stats
                     for i in self.train_stats:
                         if i.name == guess_name:
                             i.filters.append(filter)
-                            
-                            # Adding pool to training info
-                            tinfo = self.getTrainInfo(convolution.name)
-                            if tinfo != None:
-                                tinfo.pool.append(convolution.pmatrix)
-                                tinfo.convolution.append(convolution.cmatrix)
                 else:
                     if self.debug:
                         print("Incorrect Guess: " + guess_name + "    is actually  " + convolution.name)
+                
+                convolution = None
+                guess_name = None
 
             # Printout of accuracy of the entire NN simulation
             if self.debug:
@@ -220,6 +246,8 @@ class Train:
             self.correct_perc_array.append(self.correct_percentage)
             self.correct_array.append(len(correct))
             #print("% Value of Images Correct: " + str(self.correct_percentage) + "%")
+            counter += 1
+        counter = None
     
 
     # Write out all of the information to a bunch of files within a specific directory
@@ -264,12 +292,19 @@ class Train:
 
         # write out training stats to a JSON file
         json_file = open(join(self.tstats_dir, self.tstat_fname), "w")
-        obj_setup = {"date" : str(datetime.now()), "objects" : []}
+        obj_setup = {"date" : str(datetime.now()), "image-height" : self.img_height, "image-width": self.img_width, "objects" : []}
 
         # update object setup for training stats to a dictionary to convert to JSON
         for i in self.train_stats:
-            obj_setup["objects"].append({"name" : i.name, "filters" : i.filters, "pool" : i.pool, "convolutions" : i.convolution})
+            obj_setup["objects"].append({"name" : i.name, "filter-count" : len(i.filters), "filters" : i.filters})
 
         # write out information to a JSON file and clsoe it
         json_file.write(str(str(json.dumps(obj_setup)).encode("ascii").decode("ascii")))
         json_file.close()
+    
+
+    def writeOutFilter(self, name):
+        outfile = open(name, "w")
+        for filter in self.filter_array:
+            outfile.write(str(filter) + "\n")
+        outfile.close()

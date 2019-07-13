@@ -12,6 +12,10 @@ class NNImage:
         # Only if image has color
         self.convertToBW()
     
+    def update(self):
+        self.imgMatrix = numpy.array(self.img, dtype=int)
+        self.encodedMatrix = []
+    
     # Encoding RGB values to Percentage values for any RGB color
     def scalePercRGB(self, r, g, b):
         res = None

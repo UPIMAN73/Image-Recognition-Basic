@@ -1,0 +1,2 @@
+This directory is used to save all of the training information that was used in the neural network so that the NN can efficently 
+pick up the filters and allow the user to analyze the types of filters that were efficent within the program. 
