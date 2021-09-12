@@ -6,7 +6,7 @@ from PIL import Image
 import numpy
 
 # Variables for image settings
-img_dir = "./Images/universe_object_pictures"
+img_dir = "./Images/letters"
 dst_dir = "./Show-Images"
 img_names = [f for f in listdir(img_dir) if ( (isfile(join(img_dir, f)) and ((".png" in join(img_dir, f)) or (".jpg" in join(img_dir, f)) or (".jpg" in join(img_dir, f)) ) )) ]
 nn_img_arry = []

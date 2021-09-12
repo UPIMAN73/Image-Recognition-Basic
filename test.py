@@ -12,8 +12,9 @@ for i in range(0, filter_size):
 
 
 # Filter and Training Stats name
-filter_out_name = "filter_" + (str(int(math.sqrt(filter_size))) + "X" + str(int(math.sqrt(filter_size)))) + ".txt"
-tstat_out_name = "planet_stats.json"
+filter_out_name = "filter_" + (str(int(sqrt(filter_size))) + "X" + str(int(sqrt(filter_size)))) + ".txt"
+tstat_out_name = "letter_stats.json"
+#tstat_out_name = "planet_stats.json"
 
 
 # Train Class Test
